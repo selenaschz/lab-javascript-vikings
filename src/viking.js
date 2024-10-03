@@ -72,39 +72,42 @@ class War {
         }
     }
 
-    vikingAttack () {
-        //Viking random:
-        const indexVik = Math.floor(Math.random() * this.vikingArmy.length);
-        const vikingRandom = this.vikingArmy[indexVik];
-        //Saxon Random:
-        const indexSax = Math.floor(Math.random() * this.saxonArmy.length);
-        const saxonRandom = this.saxonArmy[indexSax];
-        //Saxon receive damage and store in result
-        const result = saxonRandom.receiveDamage(vikingRandom.strength);
-        //If Saxon is dead, remove of saxonArmy
-        if (saxonRandom.health <= 0) {
-            this.saxonArmy.splice(indexSax, 1);
+
+    //Method for return a random player 
+    getRandomPlayer(players) {
+        const index= Math.floor(Math.random() * players.length);
+        return players[index];
+    }
+    
+    //Iteration 5
+    //Attack method with 2 array parameters (Attackers and sufferers):
+    attack (attackers, sufferers) {
+        //Attacker random:
+        const attackerRandom = this.getRandomPlayer(attackers);
+        //Sufferer Random:
+        const suffererRandom = this.getRandomPlayer(sufferers);
+        //Call receiveDamage method and store the result
+        const result = suffererRandom.receiveDamage(attackerRandom.strength);
+
+        //If Sufferer is dead, remove of sufferers array
+        if (suffererRandom.health <= 0) {
+            //indexOf returns the index of "suffererRandom"
+            sufferers.splice(sufferers.indexOf(suffererRandom), 1);
         }
+        
         return result;
+    }
+
+    vikingAttack () {
+        //Call attack method and pass the attackers array (vikings) as first argument  and the sufferers array (saxons) as 2º argument 
+        return this.attack(this.vikingArmy, this.saxonArmy);
     }
 
     saxonAttack() {
-        //Viking random:
-        const indexVik = Math.floor(Math.random() * this.vikingArmy.length);
-        const vikingRandom = this.vikingArmy[indexVik];
-        //Saxon Random:
-        const indexSax = Math.floor(Math.random() * this.saxonArmy.length);
-        const saxonRandom = this.saxonArmy[indexSax];
-        //Viking receive damage and store in result
-        const result = vikingRandom.receiveDamage(saxonRandom.strength);
-        //If viking is dead, remove of vikingArmy
-        if (vikingRandom.health <= 0) {
-            this.vikingArmy.splice(indexVik, 1);
-        }
-        return result;
+        //Call the attack method and pass the attackers array (saxons) as first argument  and the sufferers array (vikings) as 2º argument 
+        return this.attack(this.saxonArmy, this.vikingArmy);
     }
 
-    //Iteration 5
     showStatus () {
         if (this.saxonArmy.length === 0) {
             return "Vikings have won the war of the century!"
